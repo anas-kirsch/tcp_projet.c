@@ -1,0 +1,2 @@
+#define SERVER_PORT 4507
+#define CLIENT_PORT 7995
