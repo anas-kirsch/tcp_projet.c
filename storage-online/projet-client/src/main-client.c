@@ -9,9 +9,14 @@
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
-#include "../config.h"
+#include "../../module/config.h"
+#include "common/upload.c"
 
 
+#define UPLOAD 1
+#define DOWNLOAD 2
+#define LIST 3
+#define DELETE 4
 
 
 int client_fd;
@@ -53,39 +58,44 @@ int main(int argc,char** argv){
     check_error = connect(client_fd,(struct sockaddr*)&server_addr,sizeof server_addr);perror("connect");
     if(check_error == -1 ) { close(client_fd); return EXIT_FAILURE; }
 
-
-
-
-
-    /*ouvre le fichier contenant l'image */
-    FILE* fd = fopen("voiture.jpeg","r+");
-    /*recupere sa taille*/
-    fseek(fd,0,SEEK_END);
-    int sizeFile = ftell(fd);
-    printf("%d\n",sizeFile);
-
-    /*envoie le nb d'octet en avance au serveur afin qu'il s'adapte au volume d'image qu'il recevra */
-    check_error = send(client_fd,&sizeFile,sizeof(int),0);perror("send");
-    if (client_fd == -1){return EXIT_FAILURE;}
-
     
 
+    int choix=0;
+    if(strcmp(argv[1],"upload")==0){
+        choix = UPLOAD;
+    }
+    else if(strcmp(argv[1],"download")==0){
+        choix = DOWNLOAD;
+    }
+    if(strcmp(argv[1],"list")==0){
+        choix = LIST;
+    }
+    if(strcmp(argv[1],"delete")==0){
+        choix = DELETE;
+    }
 
-    char envoie_image[sizeFile];memset(envoie_image,0,sizeFile);
-    fseek(fd,0,SEEK_SET);
-    fread(envoie_image,sizeFile,1,fd);
-    /*envoie au serveur l'image */
-    check_error = send(client_fd,envoie_image,sizeFile,0);perror("send");
-    if (client_fd == -1){return EXIT_FAILURE;}
 
 
-    /*envoie le nom du fichier pour que le serveur l'inclus dans la liste de fichier */
-    // char filename[BUFSIZ];memset(filename,0,BUFSIZ);
-    char cmd[BUFSIZ];memset(cmd,0,BUFSIZ);
-    strcpy(cmd,argv[2]);
-    printf("cmd : %s\n",cmd);
-    check_error = send(client_fd,cmd,BUFSIZ,0);perror("send");
-    if (client_fd == -1){return EXIT_FAILURE;}
+
+    switch(choix) {
+    case UPLOAD:
+        upload(argv[2]);
+
+
+        break;
+    
+    default:
+        break;
+    }
+
+
+
+
+
+
+
+
+    
 
     return 0;
 }
