@@ -58,7 +58,7 @@ int main(int argc,char** argv){
     check_error = connect(client_fd,(struct sockaddr*)&server_addr,sizeof server_addr);perror("connect");
     if(check_error == -1 ) { close(client_fd); return EXIT_FAILURE; }
 
-    
+
 
     int choix=0;
     if(strcmp(argv[1],"upload")==0){
@@ -81,7 +81,14 @@ int main(int argc,char** argv){
     case UPLOAD:
         upload(argv[2]);
 
+        break;
+    case DOWNLOAD:
+        break;
+    
+    case LIST:
+        break;
 
+    case DELETE:
         break;
     
     default:
