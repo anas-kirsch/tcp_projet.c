@@ -53,6 +53,10 @@ int main(int argc,char** argv){
     check_error = connect(client_fd,(struct sockaddr*)&server_addr,sizeof server_addr);perror("connect");
     if(check_error == -1 ) { close(client_fd); return EXIT_FAILURE; }
 
+
+
+
+
     /*ouvre le fichier contenant l'image */
     FILE* fd = fopen("voiture.jpeg","r+");
     /*recupere sa taille*/
@@ -71,7 +75,7 @@ int main(int argc,char** argv){
     fseek(fd,0,SEEK_SET);
     fread(envoie_image,sizeFile,1,fd);
     /*envoie au serveur l'image */
-    check_error = send(client_fd,envoie_image,BUFSIZ,0);perror("send");
+    check_error = send(client_fd,envoie_image,sizeFile,0);perror("send");
     if (client_fd == -1){return EXIT_FAILURE;}
 
 

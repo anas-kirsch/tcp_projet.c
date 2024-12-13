@@ -59,17 +59,10 @@ int main(){
 
     /*recv le nom du fichier image ou non, provient de l'entree terminal du client recuperer avec argv*/
     char filename[BUFSIZ];memset(filename,0,BUFSIZ);
-    filename[strlen(filename)-1]=0;
     check_error = recv(client_fd,filename,BUFSIZ,0);perror("recv");
-    if (check_error == -1){return EXIT_FAILURE;}    
-    // printf("%d\n",check_error);    
-
-    // printf("filename : %s\n",filename);
-
-
-    for (int i = 0; filename[i] <255; i++) {
-        printf("%c", filename[i]);
-    }
+    if (check_error == -1){return EXIT_FAILURE;}
+   
+    printf("filename : %s\n",filename); 
 
 
     /*ouvre le fichier dans lequel le contenu va etre enregistrer et afficher */
