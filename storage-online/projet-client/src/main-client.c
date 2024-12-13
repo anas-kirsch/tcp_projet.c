@@ -92,6 +92,7 @@ int main(int argc,char** argv){
         break;
     
     default:
+        printf("Erreur dans la commande\n");
         break;
     }
 
