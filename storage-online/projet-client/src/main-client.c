@@ -63,19 +63,28 @@ int main(int argc,char** argv){
     int choix=0;
     if(strcmp(argv[1],"upload")==0){
         choix = UPLOAD;
+        check_error= send(client_fd,&choix,sizeof(int),0);perror("send");
+        if (check_error == -1  ){  close(client_fd);return EXIT_FAILURE;}
     }
     else if(strcmp(argv[1],"download")==0){
         choix = DOWNLOAD;
+        check_error= send(client_fd,&choix,sizeof(int),0);perror("send");
+        if (check_error == -1  ){  close(client_fd);return EXIT_FAILURE;}
+
     }
     if(strcmp(argv[1],"list")==0){
         choix = LIST;
+        check_error= send(client_fd,&choix,sizeof(int),0);perror("send");
+        if (check_error == -1  ){  close(client_fd);return EXIT_FAILURE;}
+
     }
     if(strcmp(argv[1],"delete")==0){
         choix = DELETE;
+        check_error= send(client_fd,&choix,sizeof(int),0);perror("send");
+        if (check_error == -1  ){  close(client_fd);return EXIT_FAILURE;}
     }
 
-
-
+    
 
     switch(choix) {
     case UPLOAD:
@@ -83,6 +92,7 @@ int main(int argc,char** argv){
 
         break;
     case DOWNLOAD:
+        
         break;
     
     case LIST:
