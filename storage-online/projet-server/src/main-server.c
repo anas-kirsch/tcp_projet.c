@@ -121,13 +121,23 @@ int main(){
         break;
     case DOWNLOAD:
 
-        
+    /*je recoi argv2 du client je l'utilise pour ouvrir le fichier qui contient le meme nom, 
+    je lis sa taille et jenvoie au client*/
+    /* une fois que j'ai la taille je lis le fichier et je le send au client */
+
         break;
 
     case LIST:
+
+        /*si le client envoie une demande pour voir la liste des fichier que je contient*/
+        /*j'ouvre le fichier contenant la liste de file*/
+        /*je send sa taille en octet pour une bonne reception du client */
+        /* je le lis et je lenvoie*/
         break;
 
     case DELETE:
+        /* recv le nom du fichier a supprimer*/
+        /*manque consigne sur comment bien supprimer un fichier*/
         break;
     default:
         break;

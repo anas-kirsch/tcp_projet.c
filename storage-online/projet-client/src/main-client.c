@@ -92,13 +92,21 @@ int main(int argc,char** argv){
 
         break;
     case DOWNLOAD:
-        
+        /*si le case se lance alors je send argv[2 ] au serveur afin qui sache quelle fichier m'envoyer  */
+        /*je recv la sizefile pour facilite le recv du fichier*/
+        /*je recv limage et je la lis en louvrant avec le chemin ver le dossier pulic*/
         break;
     
     case LIST:
+        /*permet de demande la liste des fichier pour en choisir un a recuperer du serveur */
+        /*je recv la taille du fichier liste */
+        /* je recv le fichier liste lui meme 
+        contenu dans le buff et je printf le buff avec la liste(autre solution jouvre le fichier a+ et je read
+        )*/
         break;
 
     case DELETE:
+        /*je send le nom du fichier a delete*/
         break;
     
     default:
