@@ -109,16 +109,16 @@ int main(int argc,char** argv){
         if (check_error == -1 ){return EXIT_FAILURE;}
         printf("sizefile : %d\n",sizeFile);
         
-        check_error = recv(client_fd,file,sizeFile,0);perror("recv");
+        check_error = recv(client_fd,file,strlen(file),0);perror("recv");
         if (check_error == -1 ){return EXIT_FAILURE;}
         
         
         /*ouvre le fichier contenant l'image */
         sprintf(path,"build/public/%s",cmd_name);perror("sprintf");/*colle deux chaine de caractere*/
         printf("path : %s\n",path);
-        FILE* fd = fopen(path,"a+");perror("fopen");/*ouvre le fd a lire */
-        fwrite(file,sizeFile,1,fd);
-
+        FILE* fd = fopen(path,"w+");perror("fopen");/*ouvre le fd a lire */
+        fwrite(file,sizeFile,1,fd);perror("fwrite");
+        // fread(file,sizeFile,1,fd);perror("fread");
         break;
     
     case LIST:
