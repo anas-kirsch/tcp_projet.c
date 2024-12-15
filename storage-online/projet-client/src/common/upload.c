@@ -21,7 +21,7 @@ void upload(char* cmd){
         int sizeFile = ftell(fd);
         printf("%d\n",sizeFile);
 
-
+        
 
         /*envoie le nb d'octet en avance au serveur afin qu'il s'adapte au volume d'image qu'il recevra */
         int check_error = send(client_fd,&sizeFile,sizeof(int),0);perror("send");

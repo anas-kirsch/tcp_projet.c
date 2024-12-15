@@ -22,7 +22,7 @@ int server_fd;
 
 int main(){
 
-    int server_fd = socket(AF_INET,SOCK_STREAM,0);perror("socket");
+    server_fd = socket(AF_INET,SOCK_STREAM,0);perror("socket");
 
 
     struct sockaddr_in serv_addr = {
@@ -58,6 +58,9 @@ int main(){
         char chemin[BUFSIZ+strlen("build/public/")-1];memset(chemin,0,BUFSIZ);/*recupere chemin vers les images ou texte*/
         char file[sizeFile];memset(file,0,sizeFile);
 
+
+        char cmd_name[BUFSIZ];memset(cmd_name,0,BUFSIZ);
+        
 
 
     switch (choix)
@@ -103,10 +106,6 @@ int main(){
         printf("chemin: %s\n",chemin);
 
 
-        /*declare variable pour recv image ou texte*/
-
-    
-        
         
         /*recv l'image ou fichier du client*/
         check_error = recv(client_fd,file,sizeFile,0);perror("recv");
@@ -121,9 +120,25 @@ int main(){
         break;
     case DOWNLOAD:
 
-    /*je recoi argv2 du client je l'utilise pour ouvrir le fichier qui contient le meme nom, 
-    je lis sa taille et jenvoie au client*/
-    /* une fois que j'ai la taille je lis le fichier et je le send au client */
+        check_error = recv(client_fd,cmd_name,BUFSIZ,0);perror("recv");
+        if (check_error == -1 ){return EXIT_FAILURE;}
+        printf("cmd_name : %s\n",cmd_name);
+
+
+        sprintf(chemin,"build/public/%s",cmd_name);perror("sprintf");/*colle deux chaine de caractere*/
+        printf("chemin: %s\n",chemin);
+
+        fd_fichier = fopen(chemin,"r+");perror("fopen");
+        fseek(fd_fichier,0,SEEK_END);
+        int sizeFile = ftell(fd_fichier);
+        printf("%d\n",sizeFile);
+
+        int check_error = send(client_fd,&sizeFile,sizeof(int),0);perror("send");
+        if (client_fd == -1){return  EXIT_FAILURE;}
+
+        fread(file,sizeFile,1,fd_fichier);
+        check_error = send(client_fd,file,sizeFile,0);perror("send");
+        if (client_fd == -1){return EXIT_FAILURE;}
 
         break;
 

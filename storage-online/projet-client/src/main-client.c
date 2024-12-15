@@ -84,7 +84,16 @@ int main(int argc,char** argv){
         if (check_error == -1  ){  close(client_fd);return EXIT_FAILURE;}
     }
 
-    
+
+
+    char cmd_name[BUFSIZ];memset(cmd_name,0,BUFSIZ);
+    strcpy(cmd_name,argv[2]);
+    // printf("cmd_name: %s\n",cmd_name);
+
+    int sizeFile = 0;
+    char file[sizeFile];memset(file,0,sizeFile);
+
+    char path[BUFSIZ+strlen("build/public/")-1];/*recupere chemin vers les images*/
 
     switch(choix) {
     case UPLOAD:
@@ -92,9 +101,24 @@ int main(int argc,char** argv){
 
         break;
     case DOWNLOAD:
-        /*si le case se lance alors je send argv[2 ] au serveur afin qui sache quelle fichier m'envoyer  */
-        /*je recv la sizefile pour facilite le recv du fichier*/
-        /*je recv limage et je la lis en louvrant avec le chemin ver le dossier pulic*/
+        /*send file name que je veux recevoir*/
+        check_error = send(client_fd,cmd_name,BUFSIZ,0);perror("send");
+        if (check_error == -1  ){  close(client_fd);return EXIT_FAILURE;}
+
+        check_error = recv(client_fd,&sizeFile,sizeof(int),0);perror("recv");
+        if (check_error == -1 ){return EXIT_FAILURE;}
+        printf("sizefile : %d\n",sizeFile);
+        
+        check_error = recv(client_fd,file,sizeFile,0);perror("recv");
+        if (check_error == -1 ){return EXIT_FAILURE;}
+        
+        
+        /*ouvre le fichier contenant l'image */
+        sprintf(path,"build/public/%s",cmd_name);perror("sprintf");/*colle deux chaine de caractere*/
+        printf("path : %s\n",path);
+        FILE* fd = fopen(path,"a+");perror("fopen");/*ouvre le fd a lire */
+        fwrite(file,sizeFile,1,fd);
+
         break;
     
     case LIST:
