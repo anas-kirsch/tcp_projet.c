@@ -10,7 +10,9 @@
 #include <errno.h>
 #include <time.h>
 #include "../../module/config.h"
-
+#include "../src/common/download.c"
+#include "../src/common/upload.c"
+#include "../src/common/list.c"
 
 #define UPLOAD 1
 #define DOWNLOAD 2
@@ -54,100 +56,23 @@ int main(){
 
 
         int sizeFile=0;
-        char filename[BUFSIZ];memset(filename,0,BUFSIZ);
-        char chemin[BUFSIZ+strlen("build/public/")-1];memset(chemin,0,BUFSIZ);/*recupere chemin vers les images ou texte*/
-        char file[sizeFile];memset(file,0,sizeFile);
 
-
-        char cmd_name[BUFSIZ];memset(cmd_name,0,BUFSIZ);
+        // char liste[sizeFile];memset(liste,0,sizeFile);
         
-
 
     switch (choix)
     {
     case UPLOAD:
-        
-           /*permet de recuperer en avance le nombre exact d'octet de l'image a recv */
-        check_error = recv(client_fd,&sizeFile,sizeof(int),0);perror("recv");
-        if (check_error == -1 ){return EXIT_FAILURE;}
-        printf("%d\n",sizeFile);
-        
-
-        /*recv le nom du fichier image ou non, provient de l'entree terminal du client recuperer avec argv*/
-        check_error = recv(client_fd,filename,BUFSIZ,0);perror("recv");
-        if (check_error == -1){return EXIT_FAILURE;}
-        printf("filename : %s\n",filename); 
-
-
-
-        /*ouvre le fichier dans lequel vont etre lister les fichiers que le serveur possède*/
-        FILE* list_file = fopen("build/bdd/liste-fichier.txt","a+");perror("fopen");
-        
-        /* lire l'heure courante */ 
-            time_t now = time (NULL);
-            
-            /* la convertir en heure locale */
-            struct tm tm_now = *localtime (&now);
-            
-            /* Créer une chaine JJ/MM/AAAA HH:MM:SS */
-            char s_now[sizeof "JJ/MM/AAAA HH:MM:SS" ];
-            
-            strftime (s_now, sizeof s_now, "%d/%m/%Y %H:%M:%S", &tm_now);
-
-
-            fprintf(list_file,"[%s] %d %s \n",s_now,sizeFile,filename);/*recuper entrer bash file_name */
-            fclose(list_file);perror("fclose");
-        
-    
-        // char element[BUFSIZ];memset(element,0,BUFSIZ);
-        
-        //  char chemin[BUFSIZ+strlen("build/public/")-1];
-        sprintf(chemin,"build/public/%s",filename);perror("sprintf");/*colle deux chaine de caractere*/
-        printf("chemin: %s\n",chemin);
-
-
-        
-        /*recv l'image ou fichier du client*/
-        check_error = recv(client_fd,file,sizeFile,0);perror("recv");
-        if (check_error == -1 ){return EXIT_FAILURE;}
-
-        /*ouvre le fichier dans lequel le contenu va etre enregistrer et afficher */
-        FILE* fd_fichier = fopen(chemin,"a+");perror("fopen");
-        // fread(image,BUFSIZ,1,fd_image);
-        fwrite(file,sizeFile,1,fd_fichier);
-
-
+        upload(client_fd);
         break;
+
     case DOWNLOAD:
-
-        check_error = recv(client_fd,cmd_name,BUFSIZ,0);perror("recv");
-        if (check_error == -1 ){return EXIT_FAILURE;}
-        printf("cmd_name : %s\n",cmd_name);
-
-
-        sprintf(chemin,"build/public/%s",cmd_name);perror("sprintf");/*colle deux chaine de caractere*/
-        printf("chemin: %s\n",chemin);
-
-        fd_fichier = fopen(chemin,"r+");perror("fopen");
-        fseek(fd_fichier,0,SEEK_END);
-        int sizeFile = ftell(fd_fichier);
-        printf("%d\n",sizeFile);
-
-        int check_error = send(client_fd,&sizeFile,sizeof(int),0);perror("send");
-        if (client_fd == -1){return  EXIT_FAILURE;}
-
-        fread(file,sizeFile,1,fd_fichier);
-        check_error = send(client_fd,file,sizeFile,0);perror("send");
-        if (client_fd == -1){return EXIT_FAILURE;}
-
+        download(client_fd);
         break;
 
     case LIST:
-
-        /*si le client envoie une demande pour voir la liste des fichier que je contient*/
-        /*j'ouvre le fichier contenant la liste de file*/
-        /*je send sa taille en octet pour une bonne reception du client */
-        /* je le lis et je lenvoie*/
+        // printf("voici la liste\n");
+        list(client_fd);
         break;
 
     case DELETE:

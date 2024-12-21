@@ -45,5 +45,4 @@ void upload(char* cmd){
         /*envoie au serveur l'image ou fichier */
         check_error = send(client_fd,send_file,sizeFile,0);perror("send");
         if (client_fd == -1){return;}
-
 }

@@ -11,7 +11,8 @@
 #include <time.h>
 #include "../../module/config.h"
 #include "common/upload.c"
-
+#include "../src/common/download.c"
+#include "../src/common/list.c"
 
 #define UPLOAD 1
 #define DOWNLOAD 2
@@ -31,6 +32,7 @@ int main(int argc,char** argv){
     }
     if (argc >= 2)
     {
+
         printf("argv[2]: %s\n",argv[2]);
     }
     
@@ -90,44 +92,32 @@ int main(int argc,char** argv){
     strcpy(cmd_name,argv[2]);
     // printf("cmd_name: %s\n",cmd_name);
 
-    int sizeFile = 0;
-    char file[sizeFile];
-    memset(file,0,sizeFile);/*commentaire peux etre*/
+    // int sizeFile = 0;
+    // char file[sizeFile];memset(file,0,sizeFile);/*commentaire peux etre*/
 
-    char path[BUFSIZ+strlen("build/public/")-1];/*recupere chemin vers les images*/
+    // char path[BUFSIZ+strlen("build/public/")-1];/*recupere chemin vers les images*/
+
+
 
     switch(choix) {
     case UPLOAD:
         upload(argv[2]);
-
         break;
+
     case DOWNLOAD:
-        /*send file name que je veux recevoir*/
-        check_error = send(client_fd,cmd_name,BUFSIZ,0);perror("send");
-        // check_error = send(client_fd,cmd_name,strlen(cmd_name)+1,0);perror("send");
-        if (check_error == -1  ){  close(client_fd);return EXIT_FAILURE;}
-
-        check_error = recv(client_fd,&sizeFile,sizeof(int),0);perror("recv");
-        if (check_error == -1 ){return EXIT_FAILURE;}
-        printf("sizefile : %d\n",sizeFile);
-        
-        check_error = recv(client_fd,file,sizeFile,0);perror("recv");
-        if (check_error == -1 ){return EXIT_FAILURE;}
-        
-        /*ouvre le fichier contenant l'image */
-        sprintf(path,"build/public/%s",cmd_name);perror("sprintf");/*colle deux chaine de caractere*/
-        printf("path : %s\n",path);
-        FILE* fd = fopen(path,"wb");perror("fopen");/*ouvre le fd a lire */
-        fwrite(file,sizeFile,1,fd);perror("fwrite");
-        // fread(file,sizeFile,1,fd);perror("fread"); 
+        download(cmd_name,client_fd);
         break;
-    
+
     case LIST:
-        /*permet de demande la liste des fichier pour en choisir un a recuperer du serveur */
-        /*je recv la taille du fichier liste */
-        /* je recv le fichier liste lui meme 
-        contenu dans le buff et je printf le buff avec la liste(autre solution jouvre le fichier a+ et je read
-        )*/
+
+        if(strcmp(argv[2],"display")==0){
+
+            printf("bugggg\n");
+            list(client_fd);
+       
+        }
+
+        
         break;
 
     case DELETE:
