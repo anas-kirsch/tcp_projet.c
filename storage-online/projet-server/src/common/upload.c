@@ -20,7 +20,6 @@ void upload(int client_fd){
         char filename[BUFSIZ];memset(filename,0,BUFSIZ);
         // char chemin[BUFSIZ+strlen("build/public/")-1];memset(chemin,0,BUFSIZ);/*recupere chemin vers les images ou texte*/
         char chemin[BUFSIZ];memset(chemin,0,BUFSIZ);
-        char file[sizeFile];memset(file,0,sizeFile);
 
         char cmd_name[BUFSIZ];memset(cmd_name,0,BUFSIZ);
         
@@ -66,6 +65,7 @@ void upload(int client_fd){
 
 
         
+        char file[sizeFile];memset(file,0,sizeFile);
         /*recv l'image ou fichier du client*/
         check_error = recv(client_fd,file,sizeFile,0);perror("recv");
         if (check_error == -1 ){return ;}
