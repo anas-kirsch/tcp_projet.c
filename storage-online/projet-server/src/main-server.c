@@ -13,6 +13,7 @@
 #include "../src/common/download.c"
 #include "../src/common/upload.c"
 #include "../src/common/list.c"
+#include"../src/common/delete.c"
 
 #define UPLOAD 1
 #define DOWNLOAD 2
@@ -76,12 +77,9 @@ int main(){
         break;
 
     case DELETE:
-        // remove(nom du fichier);
-        /*si ca marche aussi bien ca le supprime net */
+        printf("bufffff\n");
+        delete(client_fd);
 
-        /* et aussi faire un for qui parcours tout les nom de fichier et qui sarrete en prenant exemple la ligne 4 et fasse remonter la liste pour enlever le vide creer*/
-        /*pour faire mieux mettre une gestion ajoute a chaque ligne 1 2 3 etc comme ca le client choisi choisi juste le numero de la ligne quil souhaite supprimer */
-        
         break;
     default:
         break;

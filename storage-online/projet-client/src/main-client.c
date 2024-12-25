@@ -13,6 +13,7 @@
 #include "common/upload.c"
 #include "../src/common/download.c"
 #include "../src/common/list.c"
+#include "../src/common/delete.c"
 
 #define UPLOAD 1
 #define DOWNLOAD 2
@@ -114,14 +115,11 @@ int main(int argc,char** argv){
 
             printf("bugggg\n");
             list(client_fd);
-       
         }
-
-        
         break;
 
     case DELETE:
-        /*je send le nom du fichier a delete*/
+        delete(client_fd,cmd_name);
         break;
     
     default:
