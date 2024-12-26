@@ -72,20 +72,15 @@ int main(){
         break;
 
     case LIST:
-        // printf("voici la liste\n");
         list(client_fd);
         break;
 
     case DELETE:
-        printf("bufffff\n");
         delete(client_fd);
-
         break;
+
     default:
         break;
     }
-
- 
-
     return 0;
 }
