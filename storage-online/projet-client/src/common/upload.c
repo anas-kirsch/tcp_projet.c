@@ -6,43 +6,58 @@
 
 int client_fd;
 
-void upload(char* cmd){
+void upload(char* cmd) {
+    printf("cmd : %s\n", cmd);
 
-    
-        printf("cmd : %s\n",cmd);
+    // Construire le chemin
+    char path[BUFSIZ + strlen("build/public/")];
+    sprintf(path, "build/public/%s", cmd);
+    perror("sprintf");
+    printf("path : %s\n", path);
 
-        char path[BUFSIZ+strlen("build/public/")-1];/*recupere chemin vers les images*/
-        /*ouvre le fichier contenant l'image */
-        sprintf(path,"build/public/%s",cmd);perror("sprintf");/*colle deux chaine de caractere*/
-        printf("path : %s\n",path);
-        FILE* fd = fopen(path,"r+");perror("fopen");/*ouvre le fd a lire */
-        /*recupere sa taille*/
-        fseek(fd,0,SEEK_END);
-        int sizeFile = ftell(fd);
-        printf("%d\n",sizeFile);
+    // Ouvrir le fichier
+    FILE* fd = fopen(path, "rb"); // "rb" pour mode binaire
+    if (!fd) {
+        perror("fopen");
+        return;
+    }
 
-        
+    // Récupérer la taille du fichier
+    fseek(fd, 0, SEEK_END);
+    int sizeFile = ftell(fd);
+    rewind(fd); // Revenir au début du fichier
+    printf("Taille du fichier : %d\n", sizeFile);
 
-        /*envoie le nb d'octet en avance au serveur afin qu'il s'adapte au volume d'image qu'il recevra */
-        int check_error = send(client_fd,&sizeFile,sizeof(int),0);perror("send");
-        if (client_fd == -1){return;}
+    // Envoyer la taille du fichier
+    if (send(client_fd, &sizeFile, sizeof(int), 0) == -1) {
+        perror("send (sizeFile)");
+        fclose(fd);
+        return;
+    }
 
+    // Envoyer le nom du fichier avec un '\0'
+    if (send(client_fd, cmd, strlen(cmd) + 1, 0) == -1) {
+        perror("send (filename)");
+        fclose(fd);
+        return;
+    }
 
+    // Envoyer le fichier par fragments
+    char buffer[1024];
+    int bytesRead = 0;
+    while ((bytesRead = fread(buffer, 1, sizeof(buffer), fd)) > 0) {
+        int bytesSent = 0;
+        while (bytesSent < bytesRead) {
+            int sent = send(client_fd, buffer + bytesSent, bytesRead - bytesSent, 0);
+            if (sent == -1) {
+                perror("send (file fragment)");
+                fclose(fd);
+                return;
+            }
+            bytesSent += sent;
+        }
+    }
 
-        // char cmd[BUFSIZ];memset(cmd,0,BUFSIZ);
-        // strcpy(cmd,argv[2]);
-        // printf("cmd : %s\n",cmd);
-
-        /*envoie le nom du fichier pour que le serveur l'inclus dans la liste de fichier */
-        check_error = send(client_fd,cmd,strlen(cmd),0);perror("send");
-        if (client_fd == -1){return;}
-
-        /*declaration de variable pour envoyer au serveur le fichier choisi par le client*/
-        char send_file[sizeFile];
-        memset(send_file,0,sizeFile);
-        fseek(fd,0,SEEK_SET);
-        fread(send_file,sizeFile,1,fd);/*lis le fichier qui va etre envoyer*/
-        /*envoie au serveur l'image ou fichier */
-        check_error = send(client_fd,send_file,sizeFile,0);perror("send");
-        if (client_fd == -1){return;}
+    printf("Fichier envoyé avec succès !\n");
+    fclose(fd);
 }
