@@ -9,12 +9,12 @@
 #include "../../../module/config.h"
 
 void upload(int client_fd) {
-    int sizeFile = 0;
+    long long int sizeFile = 0;
     char filename[BUFSIZ] = {0};
     char chemin[BUFSIZ] = {0};
 
     // Recevoir la taille du fichier
-    if (recv(client_fd, &sizeFile, sizeof(int), 0) <= 0) {
+    if (recv(client_fd, &sizeFile, sizeof(long long int), 0) <= 0) {
         perror("recv (sizeFile)");
         close(client_fd);
         return;
@@ -43,7 +43,7 @@ void upload(int client_fd) {
     }
 
     // Recevoir le fichier par fragments
-    char file[1024];
+    char* file= malloc(sizeFile);
     int bytesReceived = 0;
     while (bytesReceived < sizeFile) {
         int chunkSize = recv(client_fd, file, sizeof(file), 0);
@@ -56,7 +56,7 @@ void upload(int client_fd) {
         fwrite(file,1,chunkSize,fd_fichier);
         bytesReceived += chunkSize;
     }
-
+    free(file);
     printf("Fichier reçu avec succès !\n");
     fclose(fd_fichier);
 

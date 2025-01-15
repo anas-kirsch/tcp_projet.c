@@ -20,7 +20,7 @@ void download(int client_fd){
 
    
 
-    int sizeFile=0;
+    long long int sizeFile=0;
     char filename[BUFSIZ];memset(filename,0,BUFSIZ);
     char chemin[BUFSIZ];memset(chemin,0,BUFSIZ);/*recupere chemin vers les images ou texte*/
     char cmd_name[BUFSIZ];memset(cmd_name,0,BUFSIZ);
@@ -39,15 +39,58 @@ void download(int client_fd){
         fseek(fd_fichier,0,SEEK_END);
         sizeFile = ftell(fd_fichier);
         printf("%d\n",sizeFile);
+        rewind(fd_fichier);
+        // fseek(fd_fichier,0,SEEK_SET);
 
-        char file[sizeFile];memset(file,0,sizeFile);
-        check_error = send(client_fd,&sizeFile,sizeof(int),0);perror("send");
-        if (client_fd == -1){return  ;}
-
-        fseek(fd_fichier,0,SEEK_SET);
-        fread(file,sizeFile,1,fd_fichier);
-        check_error = send(client_fd,file,sizeFile,0);perror("send");
+        check_error = send(client_fd,&sizeFile,sizeof(long long int),0);perror("send");
         if (client_fd == -1){return ;}
 
 
+
+
+
+
+
+
+
+    char* buffer = malloc(sizeFile);
+    // char buffer[sizeFile];memset(buffer,0,sizeFile);
+    int bytesRead = 0;
+    // printf("size of buffer : %d\n",sizeFile);
+    // printf("sizefile : %d\n",sizeFile);
+    
+
+
+    while ((bytesRead = fread(buffer, 1, sizeFile, fd_fichier)) > 0) {
+        long long int bytesSent = 0;
+        // printf("bytessent = %d et bytesread = %d\n",bytesSent,bytesRead);
+        while (bytesSent < bytesRead) {
+            long long int sent = send(client_fd, buffer + bytesSent, bytesRead - bytesSent, 0);perror("send");
+            if (sent == -1) {
+                perror("send (file fragment)");
+                fclose(fd_fichier);
+                return;
+            }
+            bytesSent += sent;
+        }
+    }
+    printf("Fichier envoyé avec succès !\n");
+    free(buffer);
+    fclose(fd_fichier);perror("fclose");
+
 }
+
+
+
+
+
+        // char* file = malloc(sizeFile);
+        // check_error = send(client_fd,&sizeFile,sizeof(long long int),0);perror("send");
+        // if (client_fd == -1){return  ;}
+
+        // fseek(fd_fichier,0,SEEK_SET);
+        // fread(file,sizeFile,1,fd_fichier);
+        // check_error = send(client_fd,file,sizeFile,0);perror("send");
+        // if (client_fd == -1){return ;}
+
+        // free(file);

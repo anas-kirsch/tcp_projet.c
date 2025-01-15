@@ -1,2 +1,2 @@
-#define SERVER_PORT 5659
-#define CLIENT_PORT 8996
+#define SERVER_PORT 4908
+#define CLIENT_PORT 8751

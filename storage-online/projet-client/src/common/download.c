@@ -8,7 +8,7 @@
 
 void download(char* cmd_name, int client_fd){
 
-    int sizeFile = 0;
+    long long int sizeFile = 0;
 
     char path[BUFSIZ+strlen("build/public/")-1];/*recupere chemin vers les images*/
 
@@ -18,22 +18,69 @@ void download(char* cmd_name, int client_fd){
         // check_error = send(client_fd,cmd_name,strlen(cmd_name)+1,0);perror("send");
         if (check_error == -1  ){  close(client_fd);return ;}
 
-        check_error = recv(client_fd,&sizeFile,sizeof(int),0);perror("recv");
+        check_error = recv(client_fd,&sizeFile,sizeof(long long int),0);perror("recv");
         if (check_error == -1 ){return ;}
         printf("sizefile : %d\n",sizeFile);
-        
-        char file[sizeFile];memset(file,0,sizeFile);/*commentaire peux etre*/
-        check_error = recv(client_fd,file,sizeFile,0);perror("recv");
-        if (check_error == -1 ){return ;}
         
         /*ouvre le fichier contenant l'image */
         sprintf(path,"build/public/%s",cmd_name);perror("sprintf");/*colle deux chaine de caractere*/
         printf("path : %s\n",path);
-        FILE* fd = fopen(path,"w+");perror("fopen");/*ouvre le fd a lire */
-        fseek(fd,0,SEEK_SET);
-        fwrite(file,sizeFile,1,fd);perror("fwrite");
-        // fread(file,sizeFile,1,fd);perror("fread"); 
+        FILE* fd = fopen(path,"wb+");perror("fopen");/*ouvre le fd a lire */
+        rewind(fd);perror("rewind");
+        // fseek(fd,0,SEEK_SET);perror("fseek");
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        char* file= malloc(sizeFile);
+        // char file[sizeFile];memset(file,0,sizeFile);
+
+        int bytesReceived = 0;
+        // printf("sizefile : %d\n",sizeFile);
+        // printf("taille : %d\n",sizeof(file));
+        printf("bytes recv : %d\n",bytesReceived);
+      
+
+        while (bytesReceived < sizeFile) {
+        int chunkSize = recv(client_fd, file, sizeFile, 0);perror("recv");
+        // printf("bytessent = %d et bytesread = %d\n",chunkSize,bytesReceived);
+        if (chunkSize <= 0) {
+              perror("recv (file fragment)");
+              fclose(fd);
+              close(client_fd);
+              return;
+          }
+        printf("bytes recv : %d\n",bytesReceived);
+
+          // fseek(fd,0,SEEK_SET);
+          fwrite(file,1,chunkSize,fd);perror("fwrite");
+          bytesReceived += chunkSize;
+      }
+      free(file);
+
+  
+        // fwrite(file,sizeFile,1,fd);perror("fwrite");
+        // // fread(file,sizeFile,1,fd);perror("fread"); 
+
+      
 
 }
+
+
+
+        // char* file = malloc(sizeFile);
+        // check_error = recv(client_fd,file,sizeFile,0);perror("recv");
+        // if (check_error == -1 ){return ;}
