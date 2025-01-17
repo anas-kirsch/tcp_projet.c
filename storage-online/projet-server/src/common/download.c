@@ -38,7 +38,7 @@ void download(int client_fd){
         FILE* fd_fichier = fopen(chemin,"r+");perror("fopen");
         fseek(fd_fichier,0,SEEK_END);
         sizeFile = ftell(fd_fichier);
-        printf("%d\n",sizeFile);
+        printf("%lld\n",sizeFile);
         rewind(fd_fichier);
         // fseek(fd_fichier,0,SEEK_SET);
 
@@ -55,14 +55,14 @@ void download(int client_fd){
 
     char* buffer = malloc(sizeFile);
     // char buffer[sizeFile];memset(buffer,0,sizeFile);
-    int bytesRead = 0;
+    long long int bytesRead = 0;
     // printf("size of buffer : %d\n",sizeFile);
     // printf("sizefile : %d\n",sizeFile);
     
 
 
     while ((bytesRead = fread(buffer, 1, sizeFile, fd_fichier)) > 0) {
-        long long int bytesSent = 0;
+    long long int bytesSent = 0;
         // printf("bytessent = %d et bytesread = %d\n",bytesSent,bytesRead);
         while (bytesSent < bytesRead) {
             long long int sent = send(client_fd, buffer + bytesSent, bytesRead - bytesSent, 0);perror("send");

@@ -48,14 +48,14 @@ void download(char* cmd_name, int client_fd){
         char* file= malloc(sizeFile);
         // char file[sizeFile];memset(file,0,sizeFile);
 
-        int bytesReceived = 0;
+        long long int bytesReceived = 0;
         // printf("sizefile : %d\n",sizeFile);
         // printf("taille : %d\n",sizeof(file));
-        printf("bytes recv : %d\n",bytesReceived);
+        printf("bytes recv : %lld\n",bytesReceived);
       
 
         while (bytesReceived < sizeFile) {
-        int chunkSize = recv(client_fd, file, sizeFile, 0);perror("recv");
+        long long int chunkSize = recv(client_fd, file, sizeFile, 0);perror("recv");
         // printf("bytessent = %d et bytesread = %d\n",chunkSize,bytesReceived);
         if (chunkSize <= 0) {
               perror("recv (file fragment)");
@@ -63,7 +63,7 @@ void download(char* cmd_name, int client_fd){
               close(client_fd);
               return;
           }
-        printf("bytes recv : %d\n",bytesReceived);
+        printf("bytes recv : %lld\n",bytesReceived);
 
           // fseek(fd,0,SEEK_SET);
           fwrite(file,1,chunkSize,fd);perror("fwrite");
