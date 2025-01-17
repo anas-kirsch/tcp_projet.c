@@ -25,8 +25,8 @@ void upload(char* cmd) {
     // Récupérer la taille du fichier
     fseek(fd, 0, SEEK_END);
     long long int sizeFile = ftell(fd);
+    printf("taille fichier : %lld\n",sizeFile);
     rewind(fd); // Revenir au début du fichier
-    printf("Taille du fichier : %d\n", sizeFile);
 
     // Envoyer la taille du fichier
     if (send(client_fd, &sizeFile, sizeof(long long int), 0) == -1) {
@@ -44,13 +44,17 @@ void upload(char* cmd) {
 
     // Envoyer le fichier par fragments
     char* buffer= malloc(sizeFile);
-    int bytesRead = 0;
+    long long int bytesRead = 0;
 
 
-    while ((bytesRead = fread(buffer, 1, sizeof(buffer), fd)) > 0) {
-        int bytesSent = 0;
+    while ((bytesRead = fread(buffer, 1, sizeFile, fd)) > 0) {
+    long long int bytesSent = 0;
+        perror("fread");
+            printf("bytes read: %lld\n",bytesRead);
+
         while (bytesSent < bytesRead) {
-            int sent = send(client_fd, buffer + bytesSent, bytesRead - bytesSent, 0);
+            printf("bytessent : %lld\n",bytesSent);
+            int sent = send(client_fd, buffer + bytesSent, bytesRead - bytesSent, 0);perror("send");
             if (sent == -1) {
                 perror("send (file fragment)");
                 fclose(fd);

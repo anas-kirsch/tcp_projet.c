@@ -19,7 +19,7 @@ void upload(int client_fd) {
         close(client_fd);
         return;
     }
-    printf("Taille du fichier : %d\n", sizeFile);
+    printf("Taille du fichier : %lld\n", sizeFile);
 
     // Recevoir le nom du fichier
     if (recv(client_fd, filename, BUFSIZ, 0) <= 0) {
@@ -44,9 +44,10 @@ void upload(int client_fd) {
 
     // Recevoir le fichier par fragments
     char* file= malloc(sizeFile);
-    int bytesReceived = 0;
+    long long int bytesReceived = 0;
     while (bytesReceived < sizeFile) {
-        int chunkSize = recv(client_fd, file, sizeof(file), 0);
+        printf("bytesrecv : %lld\n",bytesReceived);
+        long long int chunkSize = recv(client_fd, file, sizeFile, 0);
         if (chunkSize <= 0) {
             perror("recv (file fragment)");
             fclose(fd_fichier);
