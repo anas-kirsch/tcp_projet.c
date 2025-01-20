@@ -36,7 +36,6 @@ int main(){
 
     int check_error = bind(server_fd,(struct sockaddr*)&serv_addr,sizeof serv_addr);perror("bind");
     if (check_error == -1 ){return EXIT_FAILURE;}
-    // printf("ahjefeejfejjjddjjdj\n");
 
     check_error = listen(server_fd,BUFSIZ);perror("listen");
     if (check_error == -1 ){return EXIT_FAILURE;}
@@ -58,7 +57,6 @@ int main(){
 
         int sizeFile=0;
 
-        // char liste[sizeFile];memset(liste,0,sizeFile);
         
 
     switch (choix)

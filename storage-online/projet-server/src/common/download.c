@@ -40,7 +40,6 @@ void download(int client_fd){
         sizeFile = ftell(fd_fichier);
         printf("%lld\n",sizeFile);
         rewind(fd_fichier);
-        // fseek(fd_fichier,0,SEEK_SET);
 
         check_error = send(client_fd,&sizeFile,sizeof(long long int),0);perror("send");
         if (client_fd == -1){return ;}
@@ -54,16 +53,12 @@ void download(int client_fd){
 
 
     char* buffer = malloc(sizeFile);
-    // char buffer[sizeFile];memset(buffer,0,sizeFile);
     long long int bytesRead = 0;
-    // printf("size of buffer : %d\n",sizeFile);
-    // printf("sizefile : %d\n",sizeFile);
     
 
 
     while ((bytesRead = fread(buffer, 1, sizeFile, fd_fichier)) > 0) {
     long long int bytesSent = 0;
-        // printf("bytessent = %d et bytesread = %d\n",bytesSent,bytesRead);
         while (bytesSent < bytesRead) {
             long long int sent = send(client_fd, buffer + bytesSent, bytesRead - bytesSent, 0);perror("send");
             if (sent == -1) {
@@ -79,18 +74,3 @@ void download(int client_fd){
     fclose(fd_fichier);perror("fclose");
 
 }
-
-
-
-
-
-        // char* file = malloc(sizeFile);
-        // check_error = send(client_fd,&sizeFile,sizeof(long long int),0);perror("send");
-        // if (client_fd == -1){return  ;}
-
-        // fseek(fd_fichier,0,SEEK_SET);
-        // fread(file,sizeFile,1,fd_fichier);
-        // check_error = send(client_fd,file,sizeFile,0);perror("send");
-        // if (client_fd == -1){return ;}
-
-        // free(file);

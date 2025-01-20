@@ -24,7 +24,6 @@ void delete(int client_fd){
     remove(pathname);perror("remove");
 
 
-///////
 
 
 // Ouverture du fichier en mode lecture et écriture

@@ -16,6 +16,5 @@ void list(int client_fd){
 
     check_error = recv(client_fd,liste,sizeFile,0);perror("recv");
     if (check_error == -1 ){return;}
-    // system("clear");
     printf("Voici la liste :\n%s",liste);
 }

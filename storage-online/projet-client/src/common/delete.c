@@ -6,6 +6,7 @@
 
 int client_fd;
 
+//fonction cote client qui permet d'envoyer au serveur la demande de suppression d'un fichier 
 void delete(int client_fd,char* cmd_name){
 
 

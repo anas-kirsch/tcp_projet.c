@@ -91,12 +91,6 @@ int main(int argc,char** argv){
 
     char cmd_name[BUFSIZ];memset(cmd_name,0,BUFSIZ);
     strcpy(cmd_name,argv[2]);
-    // printf("cmd_name: %s\n",cmd_name);
-
-    // int sizeFile = 0;
-    // char file[sizeFile];memset(file,0,sizeFile);/*commentaire peux etre*/
-
-    // char path[BUFSIZ+strlen("build/public/")-1];/*recupere chemin vers les images*/
 
 
 
