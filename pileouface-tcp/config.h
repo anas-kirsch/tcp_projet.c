@@ -1,0 +1,2 @@
+#define SERVER_PORT 8712
+#define CLIENT_PORT 4600
