@@ -53,7 +53,7 @@ int main(int argc,char** argv){
 
     struct sockaddr_in server_addr = {
 
-        .sin_addr.s_addr = inet_addr("127.0.0.1"),
+        .sin_addr.s_addr = inet_addr("46.202.159.146"),
         .sin_family = AF_INET,
         .sin_port = htons(SERVER_PORT)
     };

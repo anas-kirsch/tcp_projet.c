@@ -33,7 +33,7 @@ void list(int client_fd){
     fread(liste,sizeFile,1,list_file);
 
     check_error = send(client_fd,liste,sizeFile,0);perror("send");
-    if (check_error == -1){return;}if (check_error == -1 ){return;}
+    if (check_error == -1){return;} // if (check_error == -1 ){return;}
         
 
 

@@ -29,7 +29,7 @@ int main(){
 
 
     struct sockaddr_in serv_addr = {
-        .sin_addr.s_addr = INADDR_ANY,
+        .sin_addr.s_addr = INADDR_ANY,//inaddrany 
         .sin_family = AF_INET,
         .sin_port = htons(SERVER_PORT)
     };
@@ -67,6 +67,7 @@ int main(){
 
     case DOWNLOAD:
         download(client_fd);
+        sleep(5);//attend que ca envoie au client
         break;
 
     case LIST:

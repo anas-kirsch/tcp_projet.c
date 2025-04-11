@@ -18,3 +18,4 @@ void list(int client_fd){
     if (check_error == -1 ){return;}
     printf("Voici la liste :\n%s",liste);
 }
+
